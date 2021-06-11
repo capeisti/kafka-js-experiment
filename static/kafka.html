@@ -1,0 +1,36 @@
+<html>
+<script>
+
+let pull = () => fetch("/pull")
+    .then(r => {
+      document.getElementById("busy").style.display = "none";
+      return r;
+    })
+    .then(r => r.json())
+    .then(r => {
+      r.forEach(element => {
+        let txt = document.createElement("div");
+        txt.innerText = element;
+        document.getElementById("msg").appendChild(txt);
+      });
+  });
+
+setInterval(pull, 10000);
+
+function onTextChange(text) {
+  if (text !== "") {
+    document.getElementById("busy").style.display = "inline-block";
+    fetch("/pump/"+text).then(res => pull());
+  }
+  document.getElementById("textinput").value = "";
+}
+</script>
+<body>
+  <h2> chat </h2>
+  <h3 id="msg"></h3>
+
+  
+  <input id="textinput" type="text" onchange="onTextChange(this.value)"></input>
+  <span  style="display: none;" id="busy">X</span>
+</body>
+</html>
